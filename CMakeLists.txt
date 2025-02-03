@@ -12,6 +12,19 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(main src/main.cpp)
+
+# Set source files
+set(SOURCES
+    src/main.cpp
+    src/core/player.cpp
+)
+
+# Set headers files
+set(HEADERS
+    src/include/player.h
+)
+
+add_executable(main ${SOURCES} ${HEADERS})
 target_compile_features(main PRIVATE cxx_std_17)
+target_include_directories(main PRIVATE src/) 
 target_link_libraries(main PRIVATE SFML::Graphics) 
