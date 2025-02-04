@@ -1,65 +1,57 @@
 #include <SFML/Graphics.hpp>
+#include <stdint.h>
+#include <iostream>
+#include <unordered_map>
+
 #include "./include/player.h"
+#include "./include/constants.h"
+
+void updateMovement(std::unordered_map<sf::Keyboard::Scancode, uint8_t>& states, 
+                    const sf::Keyboard::Scancode& keyPressed, 
+                    const bool pressed);
 
 int main() {
 
-    sf::RenderWindow window(sf::VideoMode({640, 480}), "My Window");
+    sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "My Window");
     window.setVerticalSyncEnabled(true);
-
-    sf::CircleShape tri(80.f, 3);
-    tri.setFillColor(sf::Color::Green);
+    window.setKeyRepeatEnabled(false);
 
     Player me(sf::Color::Green);
 
+    std::unordered_map<sf::Keyboard::Scancode, uint8_t> movementStates = {
+        {sf::Keyboard::Scancode::D, 0},
+        {sf::Keyboard::Scancode::A, 0},
+        {sf::Keyboard::Scancode::Right, 0},
+        {sf::Keyboard::Scancode::Left, 0},
+    };
 
-
-    bool moveRightDown = false;
-    bool moveLeftDown = false;
-
-    bool turnRightDown = false;
-    bool turnLeftDown = false;
 
     while (window.isOpen()) {
         while (const std::optional event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
                 window.close();
             } else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-                if ((keyPressed->scancode == sf::Keyboard::Scancode::D) && (!moveLeftDown)) {
-                    moveRightDown = true;
-                } else if ((keyPressed->scancode == sf::Keyboard::Scancode::A) && (!moveRightDown)) {
-                    moveLeftDown = true;
-                } else if ((keyPressed->scancode == sf::Keyboard::Scancode::Right) && (!turnLeftDown)) {
-                    turnRightDown = true;
-                } else if ((keyPressed->scancode == sf::Keyboard::Scancode::Left) && (!turnRightDown)) {
-                    turnLeftDown = true;
-                }
-
+                updateMovement(movementStates, keyPressed->scancode, true);
             } else if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()) {
-
-                if (keyReleased->scancode == sf::Keyboard::Scancode::D) {
-                    moveRightDown = false;
-                } else if (keyReleased->scancode == sf::Keyboard::Scancode::A) {
-                    moveLeftDown = false;
-                } else if (keyReleased->scancode == sf::Keyboard::Scancode::Right) {
-                    turnRightDown = false;
-                } else if (keyReleased->scancode == sf::Keyboard::Scancode::Left) {
-                    turnLeftDown = false;
-                }
+                updateMovement(movementStates, keyReleased->scancode, false);
             }
         }
 
-        if (moveRightDown) {
-            me.moveRight(5);
-        } else if (moveLeftDown) {
-            me.moveLeft(5);
+        if (movementStates[sf::Keyboard::Scancode::D] || movementStates[sf::Keyboard::Scancode::A]) {
+            if (movementStates[sf::Keyboard::Scancode::D] > movementStates[sf::Keyboard::Scancode::A]) {
+                me.moveRight(5);
+            } else {
+                me.moveLeft(5);
+            } 
         }
 
-        if (turnRightDown) {
-            me.rotateRight(5);
-        } else if (turnLeftDown) {
-            me.rotateLeft(5);
+        if (movementStates[sf::Keyboard::Scancode::Right] || movementStates[sf::Keyboard::Scancode::Left]) {
+            if (movementStates[sf::Keyboard::Scancode::Right] > movementStates[sf::Keyboard::Scancode::Left]) {
+                me.rotateRight(5);
+            } else {
+                me.rotateLeft(5);
+            } 
         }
-
         window.clear(sf::Color::Black);
         window.draw(me.getPlayer());
         window.display();
@@ -67,4 +59,30 @@ int main() {
 }
 
 
+void updateMovement(std::unordered_map<sf::Keyboard::Scancode, uint8_t>& states, 
+                    const sf::Keyboard::Scancode& keyPressed, 
+                    const bool pressed) {
+
+    if (pressed) {
+        if (keyPressed == sf::Keyboard::Scancode::D) {
+            states[sf::Keyboard::Scancode::D] = (states[sf::Keyboard::Scancode::A]) ? 2 : 1;
+            states[sf::Keyboard::Scancode::A] = (states[sf::Keyboard::Scancode::A]) ? 1 : 0;
+
+        } else if (keyPressed == sf::Keyboard::Scancode::A) {
+            states[sf::Keyboard::Scancode::A] = (states[sf::Keyboard::Scancode::D]) ? 2 : 1;
+            states[sf::Keyboard::Scancode::D] = (states[sf::Keyboard::Scancode::D]) ? 1 : 0;
+
+        } else if (keyPressed == sf::Keyboard::Scancode::Right) {
+            states[sf::Keyboard::Scancode::Right] = (states[sf::Keyboard::Scancode::Left]) ? 2 : 1;
+            states[sf::Keyboard::Scancode::Left] = (states[sf::Keyboard::Scancode::Left]) ? 1 : 0;
+
+        } else if (keyPressed == sf::Keyboard::Scancode::Left) {
+            states[sf::Keyboard::Scancode::Left] = (states[sf::Keyboard::Scancode::Right]) ? 2 : 1;
+            states[sf::Keyboard::Scancode::Right] = (states[sf::Keyboard::Scancode::Right]) ? 1 : 0;
+        }
+
+    } else {
+        states[keyPressed] = 0;
+    }
+}
 
