@@ -1,17 +1,30 @@
 
 #include "../include/player.h"
 
-Player::Player(sf::Color inpCol) {
+Player::Player() {
 
-    color = inpCol;
-    maxRot = MAX_ROT;
-    moveAmount = MOVE_AMOUNT;
-    rotAmount = ROT_AMOUNT;
-    
-    self = sf::CircleShape(80.f, 3);
-    self.setPosition({ 100.f, 100.f });
-    self.setOrigin({80.f, 80.f});
-    self.setRotation(sf::degrees(0));
+    // Create Shapes
+    body = sf::CircleShape(PLAYER_SIZE);
+    gun = sf::RectangleShape({static_cast<float>(PLAYER_SIZE / 2), PLAYER_SIZE});
+
+    // Colours
+    body.setFillColor(BODY_COL);
+    gun.setFillColor(GUN_COL);
+
+    // Set Origin For Gun Barrel Rotation
+    sf::Vector2f gunOrigin = gun.getSize() + sf::Vector2f({-static_cast<float>(gun.getSize().x / 2), PLAYER_SIZE});
+    gun.setOrigin(gunOrigin);
+
+    // Entity Position & Rotation
+    pos = { static_cast<float>(WINDOW_WIDTH/2.0), static_cast<float>(WINDOW_HEIGHT - PLAYER_SIZE*2 - PLAYER_SIZE*0.5)};
+    currRot = sf::Angle(sf::degrees(0.f));
+
+    // Set Pos & Rot
+    body.setPosition(pos);
+    sf::Vector2f gunOffset = {PLAYER_SIZE, PLAYER_SIZE};
+    gun.setPosition(pos + gunOffset);
+    gun.setRotation(currRot);
+
     std::cout << "Player Created..." << std::endl;
 }
 
@@ -19,65 +32,49 @@ Player::~Player() {
     std::cout << "Player Destroyed..." << std::endl;
 }
 
-
-// 0 all good
-// 1 too far right
-// 2 too far left
-uint8_t Player::checkRotationBounds() {
-
-    sf::Angle currRot = self.getRotation();
-
-    if (currRot.asDegrees() >= maxRot) {
-
-        if (currRot.asDegrees() >= (360 - maxRot)) {
-            return 0;
-        } 
-
-        if (currRot.asDegrees() > 180) {
-            return 2;
-        } else {
-            return 1;
-        }
-    } else {
-        return 0;
-    }
+bool Player::checkRotationBounds() {
+    return (!((currRot.asDegrees() < -MAX_ROT) || (currRot.asDegrees() > MAX_ROT)));
 }
 
 void Player::moveLeft() {
-    self.move({-moveAmount, 0});
+    body.move({-MOVE_AMOUNT, 0});
+    gun.move({-MOVE_AMOUNT, 0});
 
 }
 void Player::moveRight() {
-    self.move({moveAmount, 0});
+    body.move({MOVE_AMOUNT, 0});
+    gun.move({MOVE_AMOUNT, 0});
 }
 
 void Player::rotateRight() {
-    self.rotate(sf::degrees(rotAmount));
+    currRot += sf::degrees(ROT_AMOUNT);
 
-    uint8_t rotStatus = checkRotationBounds();
-    if (rotStatus == 0) {
-        return;
-    } else if (rotStatus == 1) {
-        self.setRotation(sf::degrees(maxRot));
+    if (checkRotationBounds()) {
+        gun.setRotation(currRot);
     } else {
-        self.setRotation(sf::degrees(360 - maxRot));
+        currRot -= sf::degrees(ROT_AMOUNT);
     }
 }
 
 void Player::rotateLeft() {
-
-    self.rotate(sf::degrees(-rotAmount));
-    uint8_t rotStatus = checkRotationBounds();
-    if (rotStatus == 0) {
-        return;
-    } else if (rotStatus == 1) {
-        self.setRotation(sf::degrees(maxRot));
+    currRot += sf::degrees(-ROT_AMOUNT);
+    if (checkRotationBounds()) {
+        gun.setRotation(currRot);
     } else {
-        self.setRotation(sf::degrees(360 - maxRot));
+        currRot -= sf::degrees(-ROT_AMOUNT);
     }
 }
 
-sf::CircleShape Player::getPlayer() {
-    return self;
+
+void Player::draw(sf::RenderWindow& target) const {
+    target.draw(body);
+    target.draw(gun);
 }
+
+
+
+
+
+
+
 

@@ -19,7 +19,7 @@ int main() {
     window.setVerticalSyncEnabled(true);
     window.setKeyRepeatEnabled(false);
 
-    Player me(sf::Color::Green);
+    Player me;
 
     std::unordered_map<sf::Keyboard::Scancode, uint8_t> movementStates = {
         {sf::Keyboard::Scancode::D, 0},
@@ -56,7 +56,7 @@ int main() {
             } 
         }
         window.clear(sf::Color::Black);
-        window.draw(me.getPlayer());
+        me.draw(window);
         window.display();
     }
 }

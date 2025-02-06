@@ -10,16 +10,17 @@
 class Player {
 
 private:
-    sf::Color color;
-    sf::CircleShape self;
-    float maxRot;
-    float moveAmount;
-    float rotAmount;
+    sf::CircleShape body;
+    sf::RectangleShape gun;
+    sf::Vector2f pos;
+    sf::Angle currRot;
 
-    uint8_t checkRotationBounds();
+
+    bool checkRotationBounds();
+    uint8_t checkPositionBounds();
 
 public:
-    Player(sf::Color inpCol);
+    Player();
     ~Player();
 
     void moveLeft();
@@ -27,8 +28,7 @@ public:
     void rotateRight();
     void rotateLeft();
 
-
-    sf::CircleShape getPlayer();
+    void draw(sf::RenderWindow& target) const;
 
 };
 
