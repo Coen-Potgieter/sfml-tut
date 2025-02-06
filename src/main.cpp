@@ -12,7 +12,10 @@ void updateMovement(std::unordered_map<sf::Keyboard::Scancode, uint8_t>& states,
 
 int main() {
 
-    sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "My Window");
+    sf::ContextSettings settings;
+    settings.antiAliasingLevel = 8;
+
+    sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "My Window", sf::Style::Default, sf::State::Windowed, settings);
     window.setVerticalSyncEnabled(true);
     window.setKeyRepeatEnabled(false);
 
@@ -39,17 +42,17 @@ int main() {
 
         if (movementStates[sf::Keyboard::Scancode::D] || movementStates[sf::Keyboard::Scancode::A]) {
             if (movementStates[sf::Keyboard::Scancode::D] > movementStates[sf::Keyboard::Scancode::A]) {
-                me.moveRight(5);
+                me.moveRight();
             } else {
-                me.moveLeft(5);
+                me.moveLeft();
             } 
         }
 
         if (movementStates[sf::Keyboard::Scancode::Right] || movementStates[sf::Keyboard::Scancode::Left]) {
             if (movementStates[sf::Keyboard::Scancode::Right] > movementStates[sf::Keyboard::Scancode::Left]) {
-                me.rotateRight(5);
+                me.rotateRight();
             } else {
-                me.rotateLeft(5);
+                me.rotateLeft();
             } 
         }
         window.clear(sf::Color::Black);

@@ -3,24 +3,29 @@
 #define PLAYER_H
 
 #include <iostream>
+#include <stdint.h>
 #include <SFML/Graphics.hpp>
+#include "constants.h"
 
 class Player {
 
 private:
     sf::Color color;
     sf::CircleShape self;
+    float maxRot;
+    float moveAmount;
+    float rotAmount;
 
-    bool checkRotationBounds();
+    uint8_t checkRotationBounds();
 
 public:
     Player(sf::Color inpCol);
     ~Player();
 
-    void moveLeft(const float dist);
-    void moveRight(const float dist);
-    void rotateRight(const float angle);
-    void rotateLeft(const float angle);
+    void moveLeft();
+    void moveRight();
+    void rotateRight();
+    void rotateLeft();
 
 
     sf::CircleShape getPlayer();
