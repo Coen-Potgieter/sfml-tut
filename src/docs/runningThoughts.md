@@ -8,6 +8,10 @@ GENERAL
     - Decided to make a separate file of constants
     - This way we can easily change things like size, max rotation, colours and etc in this file
     - I was getting, some wacky duplication declarations with this, so asked chat and they said to divide into a .h and .cpp file like ive done here
+    - Asked Claude instead an he told me about constexpr, so now i only have a .h file for constants :)
+
+- Bounding Box
+    - If we cliukc B then hitbox for all entites are shown...
 
 PLAYER
 
@@ -16,3 +20,13 @@ PLAYER
 - I am thinking of a class that manages the different shapes of the player
     - This way we can have one x&y coords and rotation to check for bounds etc....
     - Getting bounding box may be complicated though?
+
+
+BULLETS
+
+- Going to make a class that can handle both player and enemy bullets
+- For Player Bullets
+    - Need an array that which size muyst be determined at compile time => using `std::array`
+    - Will dynamically allocate/deallocate bullets to this array
+    
+- This is messed up, im gonna abstract player bullets to its own class...

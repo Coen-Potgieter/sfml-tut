@@ -2,9 +2,11 @@
 #include <stdint.h>
 #include <iostream>
 #include <unordered_map>
+#include <array>
 
-#include "./include/player.h"
 #include "./include/constants.h"
+#include "./include/player.h"
+#include "./include/bullet.h"
 
 void updateMovement(std::unordered_map<sf::Keyboard::Scancode, uint8_t>& states, 
                     const sf::Keyboard::Scancode& keyPressed, 
@@ -19,7 +21,13 @@ int main() {
     window.setVerticalSyncEnabled(true);
     window.setKeyRepeatEnabled(false);
 
+    // Set up Player and Bullets
     Player me;
+    int8_t ammoIdx = AMMO_COUNT - 1;
+    std::array<Bullet*, AMMO_COUNT> playerBullets;
+    for (int i = 0; i < AMMO_COUNT; i++) {
+        playerBullets[i] = nullptr;
+    }
 
     std::unordered_map<sf::Keyboard::Scancode, uint8_t> movementStates = {
         {sf::Keyboard::Scancode::D, 0},
@@ -36,8 +44,23 @@ int main() {
 
             } else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
 
-                if (keyPressed->scancode == sf::Keyboard::Scancode::B) {
+                if (keyPressed->scancode == sf::Keyboard::Scancode::Space) {
+
+                    if (ammoIdx < 0) {
+                        std::cout << "No AMMO CUNT" << std::endl;
+                    } else {
+                        playerBullets[ammoIdx] = new Bullet({300.f, 300.f}, sf::degrees(0.f), true);
+                        ammoIdx -= 1;
+                        std::cout << "You Got: " << static_cast<int>(ammoIdx + 1) << "Left" << std::endl;
+                    }
+
+                } else if (keyPressed->scancode == sf::Keyboard::Scancode::B) {
                     me.toggleBoundingBox();
+                    for (uint8_t i = 0; i < AMMO_COUNT; i++) {
+                        if (playerBullets[i]) {
+                            playerBullets[i]->toggleBoundingBox();
+                        }
+                    }
                 } else {
                     updateMovement(movementStates, keyPressed->scancode, true);
                 }
@@ -64,6 +87,18 @@ int main() {
 
         window.clear(sf::Color::Black);
         me.draw(window);
+
+        // Loop through bullets & draw if it exists
+        for (uint8_t i = 0; i < AMMO_COUNT; i++) {
+
+            if (playerBullets[i]) {
+                if (playerBullets[i]->draw(window)) {
+                    delete playerBullets[i];
+                    playerBullets[i] = nullptr;
+                    ammoIdx += 1;
+                }
+            }
+        }
         window.display();
     }
 }

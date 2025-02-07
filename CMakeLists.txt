@@ -23,7 +23,6 @@ FetchContent_MakeAvailable(SFML)
 set(SOURCES
     src/main.cpp
     src/core/player.cpp
-    src/core/constants.cpp
     src/core/bullet.cpp
 )
 

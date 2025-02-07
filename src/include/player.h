@@ -18,10 +18,8 @@ private:
     bool showBox;
     sf::FloatRect boundingBox;
 
-
-
     bool checkRotationBounds();
-    uint8_t checkPositionBounds();
+    bool checkPositionBounds();
 
     void drawBoundingBox(sf::RenderWindow& target) const;
 

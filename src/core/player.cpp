@@ -40,17 +40,33 @@ bool Player::checkRotationBounds() {
     return (!((currRot.asDegrees() < -MAX_ROT) || (currRot.asDegrees() > MAX_ROT)));
 }
 
-void Player::moveLeft() {
-    body.move({-MOVE_AMOUNT, 0});
-    gun.move({-MOVE_AMOUNT, 0});
+bool Player::checkPositionBounds() {
+    float boundsPadding = 20;
+    return (!((pos.x < 0 + boundsPadding) || (pos.x > WINDOW_WIDTH - 2*PLAYER_SIZE - boundsPadding)));
+}
 
-    boundingBox.position -= {MOVE_AMOUNT, 0};
+void Player::moveLeft() {
+    pos += {-MOVE_AMOUNT, 0};
+
+    if (checkPositionBounds()) {
+        body.move({-MOVE_AMOUNT, 0});
+        gun.move({-MOVE_AMOUNT, 0});
+        boundingBox.position -= {MOVE_AMOUNT, 0};
+    } else {
+        pos -= {-MOVE_AMOUNT, 0};
+    }
 
 }
 void Player::moveRight() {
-    body.move({MOVE_AMOUNT, 0});
-    gun.move({MOVE_AMOUNT, 0});
-    boundingBox.position += {MOVE_AMOUNT, 0};
+    pos += {MOVE_AMOUNT, 0};
+
+    if (checkPositionBounds()) {
+        body.move({MOVE_AMOUNT, 0});
+        gun.move({MOVE_AMOUNT, 0});
+        boundingBox.position += {MOVE_AMOUNT, 0};
+    } else {
+        pos -= {MOVE_AMOUNT, 0};
+    }
 }
 
 void Player::rotateRight() {
