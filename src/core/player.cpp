@@ -25,6 +25,10 @@ Player::Player() {
     gun.setPosition(pos + gunOffset);
     gun.setRotation(currRot);
 
+    // Misc
+    showBox = false;
+    boundingBox = body.getGlobalBounds();
+
     std::cout << "Player Created..." << std::endl;
 }
 
@@ -40,10 +44,13 @@ void Player::moveLeft() {
     body.move({-MOVE_AMOUNT, 0});
     gun.move({-MOVE_AMOUNT, 0});
 
+    boundingBox.position -= {MOVE_AMOUNT, 0};
+
 }
 void Player::moveRight() {
     body.move({MOVE_AMOUNT, 0});
     gun.move({MOVE_AMOUNT, 0});
+    boundingBox.position += {MOVE_AMOUNT, 0};
 }
 
 void Player::rotateRight() {
@@ -66,11 +73,31 @@ void Player::rotateLeft() {
 }
 
 
+void Player::toggleBoundingBox() {
+    showBox = (!showBox);
+    std::cout << "Toggled Hitbox" << std::endl;
+
+    if (showBox) {
+        boundingBox = body.getGlobalBounds();
+    }
+}
+
 void Player::draw(sf::RenderWindow& target) const {
     target.draw(body);
     target.draw(gun);
+    if (showBox) drawBoundingBox(target);
 }
 
+void Player::drawBoundingBox(sf::RenderWindow& target) const {
+
+    sf::RectangleShape hitBox(boundingBox.size);
+    hitBox.setPosition(boundingBox.position);
+    hitBox.setFillColor(sf::Color::Transparent);
+    hitBox.setOutlineThickness(3.f);
+    hitBox.setOutlineColor(sf::Color::Red);
+
+    target.draw(hitBox);
+}
 
 
 

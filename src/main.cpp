@@ -33,8 +33,14 @@ int main() {
         while (const std::optional event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
                 window.close();
+
             } else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-                updateMovement(movementStates, keyPressed->scancode, true);
+
+                if (keyPressed->scancode == sf::Keyboard::Scancode::B) {
+                    me.toggleBoundingBox();
+                } else {
+                    updateMovement(movementStates, keyPressed->scancode, true);
+                }
             } else if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()) {
                 updateMovement(movementStates, keyReleased->scancode, false);
             }
@@ -55,6 +61,7 @@ int main() {
                 me.rotateLeft();
             } 
         }
+
         window.clear(sf::Color::Black);
         me.draw(window);
         window.display();

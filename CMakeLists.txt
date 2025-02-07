@@ -24,12 +24,14 @@ set(SOURCES
     src/main.cpp
     src/core/player.cpp
     src/core/constants.cpp
+    src/core/bullet.cpp
 )
 
 # Set headers files
 set(HEADERS
     src/include/player.h
     src/include/constants.h
+    src/include/bullet.h
 )
 
 add_executable(main ${SOURCES} ${HEADERS})

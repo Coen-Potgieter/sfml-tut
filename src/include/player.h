@@ -15,9 +15,15 @@ private:
     sf::Vector2f pos;
     sf::Angle currRot;
 
+    bool showBox;
+    sf::FloatRect boundingBox;
+
+
 
     bool checkRotationBounds();
     uint8_t checkPositionBounds();
+
+    void drawBoundingBox(sf::RenderWindow& target) const;
 
 public:
     Player();
@@ -27,6 +33,8 @@ public:
     void moveRight();
     void rotateRight();
     void rotateLeft();
+
+    void toggleBoundingBox();
 
     void draw(sf::RenderWindow& target) const;
 
