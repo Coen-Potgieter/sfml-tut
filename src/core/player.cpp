@@ -115,6 +115,13 @@ void Player::drawBoundingBox(sf::RenderWindow& target) const {
     target.draw(hitBox);
 }
 
+sf::Angle Player::getRotation() const {
+    return gun.getRotation();
+}
+
+sf::Vector2f Player::getPos() const {
+    return body.getPosition() + sf::Vector2f({body.getRadius(), 0.f});
+}
 
 
 

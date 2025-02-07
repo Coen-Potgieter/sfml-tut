@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "constants.h"
+#include <cmath>
 
 class Bullet {
 
@@ -16,6 +17,10 @@ private:
     sf::CircleShape self;
     bool showBox;
     sf::FloatRect boundingBox;
+
+    float moveX;
+    float moveY;
+
 
     void move();
     bool inBounds() const;

@@ -32,8 +32,10 @@ public:
     void rotateRight();
     void rotateLeft();
 
-    void toggleBoundingBox();
+    sf::Angle getRotation() const;
+    sf::Vector2f getPos() const;
 
+    void toggleBoundingBox();
     void draw(sf::RenderWindow& target) const;
 
 };

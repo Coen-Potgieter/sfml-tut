@@ -8,6 +8,9 @@ Bullet::Bullet(const sf::Vector2f& spwnPoint, const sf::Angle& direction, const 
     pos = spwnPoint;
     self.setPosition(pos);
 
+    angle = direction;
+    self.setRotation(angle);
+
     playerBullet = shotFromPlayer;
 
     if (playerBullet) {
@@ -22,6 +25,9 @@ Bullet::Bullet(const sf::Vector2f& spwnPoint, const sf::Angle& direction, const 
     // Misc
     showBox = false;
     boundingBox = self.getGlobalBounds();
+
+    moveX = BULLET_SPEED * std::sin(angle.asRadians());
+    moveY = -BULLET_SPEED * std::cos(angle.asRadians());
 }
 
 Bullet::~Bullet() {
@@ -33,11 +39,14 @@ Bullet::~Bullet() {
 }
 
 void Bullet::move() {
-    pos.y -= BULLET_SPEED;
-    self.move({0, -BULLET_SPEED});
+
+    pos.y += moveY;
+    pos.x += moveX;
+    self.move({moveX, moveY});
 
     if (showBox) {
-        boundingBox.position.y -= BULLET_SPEED;
+        boundingBox.position.y += moveY;
+        boundingBox.position.x += moveX;
     }
 }
 
